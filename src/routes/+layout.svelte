@@ -1,10 +1,25 @@
 <script lang="ts">
-    import "bulma/css/bulma.min.css";
+    import Footer from "$components/pages/layout/Footer.svelte";
+    import Menu from "$components/pages/layout/Menu.svelte";
+    import TopBar from "$components/pages/layout/TopBar.svelte";
+    import "bulma/css/bulma.css";
     import "font-awesome/css/font-awesome.min.css";
+    import "../app.css";
 </script>
 
 <svelte:head>
     <title>Millenium</title>
 </svelte:head>
 
-<slot />
+<TopBar />
+<div id="wrapper" class="container is-fluid">
+    <div class="columns">
+      <div class="column is-2">
+          <Menu />
+      </div>
+      <div class="column is-10">
+          <slot />
+      </div>
+    </div>
+</div>
+<Footer />
