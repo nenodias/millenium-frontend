@@ -2,14 +2,13 @@
     import { auth } from "$stores/auth";
     import { authService } from "$services/authService";
 
-
     let user: string = "";
     let password: string = "";
 
-    async function doLogin(){
-        if(user && password){
+    async function doLogin() {
+        if (user && password) {
             const valid = await authService.login(user, password);
-            if(valid){
+            if (valid) {
                 auth.setAuth(user, password);
             }
         }
@@ -44,7 +43,10 @@
                             </p>
                             <hr />
                             <p class="control">
-                                <button class="button is-primary" type="button" on:click={doLogin}>Login</button
+                                <button
+                                    class="button is-primary"
+                                    type="button"
+                                    on:click={doLogin}>Login</button
                                 >
                                 <button class="button is-default">Cancel</button
                                 >
