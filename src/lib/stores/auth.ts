@@ -1,6 +1,15 @@
+import { browser } from '$app/environment';
 import { writable } from "svelte/store";
 
-const { set, subscribe } = writable<string | null>(null);
+const defaultValue = "";
+const initialValue = browser ? window.localStorage.getItem('auth') ?? defaultValue : defaultValue;
+const { set, subscribe } = writable<string>(initialValue);
+
+subscribe((value) => {
+    if (browser) {
+        window.localStorage.setItem('auth', value);
+    }
+});
 
 export const auth = {
     set,
@@ -10,7 +19,7 @@ export const auth = {
         set(btoa(value));
     },
     clear() {
-        set(null);
+        set("");
     },
     getAuth() {
         let auth = null;
