@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { auth } from "$stores/auth";
+    import { auth, token } from "$stores/auth";
     import { authService } from "$services/authService";
 
     let user: string = "";
@@ -7,9 +7,11 @@
 
     async function doLogin() {
         if (user && password) {
-            const valid = await authService.login(user, password);
-            if (valid) {
+            const basic = authService.getBasincAuthentication(user, password);
+            const valid = await authService.refreshToken(basic);
+            if (valid?.token) {
                 auth.setAuth(user, password);
+                token.set(valid?.token);
             }
         }
     }
@@ -20,7 +22,7 @@
         <div class="container">
             <div class="columns is-vcentered">
                 <div class="column is-4 is-offset-4">
-                    <form method="post">
+                    <form method="post" on:submit|preventDefault={doLogin}>
                         <h1 class="title">Login</h1>
                         <div class="box">
                             <label for="usuario" class="label">Login</label>
@@ -43,10 +45,8 @@
                             </p>
                             <hr />
                             <p class="control">
-                                <button
-                                    class="button is-primary"
-                                    type="button"
-                                    on:click={doLogin}>Login</button
+                                <button class="button is-primary" type="submit"
+                                    >Login</button
                                 >
                                 <button class="button is-default">Cancel</button
                                 >
