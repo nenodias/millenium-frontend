@@ -1,7 +1,24 @@
+import type IPageableContent from "$interfaces/IPageableContent";
 import { client } from "./axiosService";
 
 
 function makeClient<T>(base: string) {
+
+    const findAll = async function (token: string): Promise<IPageableContent<T>> {
+        try {
+            const resp = await client.get(`/${base}/`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            if (resp.status >= 200 && resp.status <= 299) {
+                return resp.data as IPageableContent<T>;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        return Promise.reject();
+    };
 
     const findById = async function (id: number, token: string): Promise<T> {
         try {
@@ -36,6 +53,7 @@ function makeClient<T>(base: string) {
     };
 
     return {
+        findAll,
         findById,
         create
     };
