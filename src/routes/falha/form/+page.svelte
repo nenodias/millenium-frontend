@@ -5,7 +5,7 @@
     import FormHeader from "$components/pages/layout/FormHeader.svelte";
     import FormPage from "$components/pages/layout/FormPage.svelte";
     import { makeClient } from "$services/crudService";
-    import type { IFalha } from "$interfaces/IFalha";
+    import type IFalha from "$interfaces/IFalha";
 
     const client = makeClient<IFalha>("falha");
     let model: IFalha = {
