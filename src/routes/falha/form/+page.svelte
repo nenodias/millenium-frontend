@@ -8,21 +8,27 @@
     import type { IFalha } from "$interfaces/IFalha";
 
     const client = makeClient<IFalha>("falha");
-
     let model: IFalha = {
         descricao: "",
     };
 
-    page.subscribe(async (data) => {
-        if (data.url.searchParams.has("id")) {
-            const text = data.url.searchParams.get("id");
-            if (text) {
-                model.id = parseInt(text);
-                let resp = await client.findById(model.id, token.getToken());
-                model.descricao = resp.descricao;
+    $: {
+        page.subscribe(async (data) => {
+            if (data.url.searchParams.has("id")) {
+                const text = data.url.searchParams.get("id");
+                if (text) {
+                    model.id = parseInt(text);
+                    let resp = await client.findById(
+                        model.id,
+                        token.getToken()
+                    );
+                    if (resp) {
+                        model = resp;
+                    }
+                }
             }
-        }
-    });
+        });
+    }
 
     function onCancel() {
         goto("/falha");
