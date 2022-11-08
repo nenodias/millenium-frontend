@@ -1,11 +1,13 @@
 <script lang="ts">
+    import type IFalha from "$interfaces/IFalha";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import { token } from "$stores/auth";
     import FormHeader from "$components/pages/layout/FormHeader.svelte";
     import FormPage from "$components/pages/layout/FormPage.svelte";
     import { makeClient } from "$services/crudService";
-    import type IFalha from "$interfaces/IFalha";
+
+    import { alerts } from "$lib/stores/alerts";
 
     const client = makeClient<IFalha>("falha");
     let model: IFalha = {
@@ -31,7 +33,15 @@
 
     async function onSubmit() {
         console.log("Evento de submit");
-        let resp = await client.create(model, token.getToken());
+        try {
+            let resp = await client.create(model, token.getToken());
+            alerts.addItem({
+                type: "success",
+                message: `Registro com id: ${resp.id} cadastrado com successo`,
+            });
+        } catch (err: any) {
+            alerts.addItem({ type: "danger", message: err.message });
+        }
     }
 </script>
 

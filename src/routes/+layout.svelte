@@ -8,6 +8,8 @@
 
     import { auth } from "$stores/auth";
     import Login from "$components/pages/layout/Login.svelte";
+    import Alerts from "$components/pages/layout/Alerts.svelte";
+    export const prerender = true;
 </script>
 
 <svelte:head>
@@ -22,6 +24,7 @@
                 <Menu />
             </div>
             <div class="column is-10">
+                <Alerts />
                 <slot />
             </div>
         </div>

@@ -12,12 +12,13 @@ function makeClient<T>(base: string) {
                 }
             });
             if (resp.status >= 200 && resp.status <= 299) {
-                return resp.data as IPageableContent<T>;
+                return Promise.resolve(resp.data as IPageableContent<T>);
             }
-        } catch (err) {
+            return Promise.reject(resp);
+        } catch (err: any) {
             console.error(err);
+            return Promise.reject(err);
         }
-        return Promise.reject();
     };
 
     const findById = async function (id: number, token: string): Promise<T> {
@@ -28,12 +29,13 @@ function makeClient<T>(base: string) {
                 }
             });
             if (resp.status >= 200 && resp.status <= 299) {
-                return resp.data as T;
+                return Promise.resolve(resp.data as T);
             }
-        } catch (err) {
+            return Promise.reject(resp);
+        } catch (err: any) {
             console.error(err);
+            return Promise.reject(err);
         }
-        return Promise.reject();
     };
 
     const create = async function (falha: T, token: string): Promise<T> {
@@ -44,12 +46,13 @@ function makeClient<T>(base: string) {
                 }
             });
             if (resp.status >= 200 && resp.status <= 299) {
-                return resp.data;
+                return Promise.resolve(resp.data as T);
             }
-        } catch (err) {
+            return Promise.reject(resp);
+        } catch (err: any) {
             console.error(err);
+            return Promise.reject(err);
         }
-        return Promise.reject();
     };
 
     return {
