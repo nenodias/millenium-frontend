@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type IFalha from "$interfaces/IFalha";
+    import type IFalha from "$interfaces/models/IFalha";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import { token } from "$stores/auth";
