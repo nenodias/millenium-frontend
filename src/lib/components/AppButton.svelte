@@ -7,7 +7,7 @@
     export let disabled: boolean = false;
 </script>
 
-<button {id} class="button {type}" disabled={disabled} on:click>
+<button {id} type="button" class="button {type}" disabled={disabled} on:click>
     {#if icon !== ""}
         <i class="fa fa-{icon}" />
     {/if}

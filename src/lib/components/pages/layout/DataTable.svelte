@@ -1,31 +1,57 @@
 <script lang="ts">
     import AppButton from "$components/AppButton.svelte";
     import Pagination from "$components/Pagination.svelte";
+    import type IFilterPageable from "$interfaces/IFilterPageable";
+    import type IPageable from "$interfaces/IPageable";
+    import type IPageableContent from "$interfaces/IPageableContent";
+    import type ISortRequest from "$interfaces/ISortRequest";
     import type IFalha from "$interfaces/models/IFalha";
     import CssType from "$lib/enums/CssType";
     import SortDirection from "$lib/enums/SortDirection";
 
     export let title: string = "";
-    let limit : number = 10;
-    let offset: number = 0;
-    let sortOrder: number = 0;
-    let sortDirection: SortDirection = SortDirection.ASC;
+    export let filters: IFilterPageable;
+    export let doSearch = (): Promise<IPageableContent<any>> =>
+        Promise.reject();
+    let retorno = {
+        content: [],
+        number: 0,
+        size: 0,
+        totalElemenets: 0,
+        totalPages: 0,
+        pageable:{
+            pageNumber:0,
+            pageSize: 0,
+            sort:{
+                sortColumn:"",
+                sortDirection: SortDirection.ASC
+            } as ISortRequest
+        } as IPageable
+    } as IPageableContent<any>;
 
-    let dados: IFalha[] = [
-        { id: 1, descricao: "TROCA DA HOMOCINETICA"} as IFalha,
-        { id: 2, descricao: "MOLA FROUXA"} as IFalha,
-    ];
+    const pesquisar = () => {
+        console.log('Pesquisando');
+        doSearch().then((ret) => {
+            console.log(filters);
+            retorno = ret;
+        });
+    };
+    pesquisar();
 </script>
 
 <div class="hero ">
     <div class="hero-body">
         <h1 class="title">Consulta de {title}</h1>
-        <form>
+        <form on:submit|preventDefault={pesquisar}>
             <slot name="filters" />
 
             <div class="field is-grouped">
                 <p class="control">
-                    <AppButton type={CssType.SEARCH} icon="search">&nbsp; Pesquisar</AppButton>
+                    <AppButton
+                        type={CssType.SEARCH}
+                        icon="search"
+                        on:click={pesquisar}>&nbsp; Pesquisar</AppButton
+                    >
                 </p>
                 <slot name="button-header" />
             </div>
@@ -42,10 +68,10 @@
                 </tr>
             </thead>
             <tbody class="dados-tabela">
-                {#each dados as dado, index}
-                <tr>
-                    <slot name="tbody" row={dado} />
-                </tr>
+                {#each retorno.content as dado, index}
+                    <tr>
+                        <slot name="tbody" row={dado} />
+                    </tr>
                 {/each}
             </tbody>
         </table>

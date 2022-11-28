@@ -1,12 +1,31 @@
+import type IFilterPageable from "$interfaces/IFilterPageable";
 import type IPageableContent from "$interfaces/IPageableContent";
+import type ISortRequest from "$interfaces/ISortRequest";
 import { client } from "./axiosService";
 
 
 function makeClient<T>(base: string) {
 
-    const findAll = async function (token: string): Promise<IPageableContent<T>> {
+    const findAll = async function (token: string, params: IFilterPageable): Promise<IPageableContent<T>> {
         try {
-            const resp = await client.get(`/${base}/`, {
+            let stringParams = "";
+            if (params !== null && params !== undefined) {
+                for (const [key, value] of Object.entries(params)) {
+                    if (key === "sort") {
+                        let sort = value as ISortRequest;
+                        if (sort !== undefined) {
+                            stringParams += `sortColumn=${sort.sortColumn}&`;
+                            stringParams += `sortDirection=${sort.sortDirection}`;
+                        }
+                    } else {
+                        if(value !== ""){
+                            stringParams += `${key}=${value}`;
+                        }
+                    }
+                    stringParams += `&`;
+                }
+            }
+            const resp = await client.get(`/${base}/?${stringParams}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
