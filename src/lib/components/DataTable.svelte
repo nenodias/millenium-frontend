@@ -12,6 +12,7 @@
     export let filters: IFilterPageable;
     export let doSearch = (): Promise<IPageableContent<any>> =>
         Promise.reject();
+
     let retorno = {
         content: [],
         number: 0,
@@ -29,9 +30,7 @@
     } as IPageableContent<any>;
 
     const pesquisar = () => {
-        console.log("Pesquisando");
         doSearch().then((ret) => {
-            console.log(filters);
             retorno = ret;
         });
     };
@@ -48,6 +47,9 @@
         pesquisar();
     };
     pesquisar();
+
+    export let dataTable = { pesquisar };
+    dataTable.pesquisar = pesquisar;
 </script>
 
 <div class="hero ">
