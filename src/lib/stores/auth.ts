@@ -27,6 +27,9 @@ export const auth = {
     setAuth(user: string, password: string) {
         authStore.set(authService.getBasincAuthentication(user, password));
     },
+    setAuthBasic(basic: string) {
+        authStore.set(basic);
+    },
     clear() {
         authStore.set("");
     },

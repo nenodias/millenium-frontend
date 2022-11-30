@@ -39,6 +39,7 @@
                 type: "success",
                 message: `Registro com id: ${resp.id} cadastrado com successo`,
             });
+            goto(`/falha/form?id=${resp.id}`);
         } catch (err: any) {
             alerts.addItem({ type: "danger", message: err.message });
         }

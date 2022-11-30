@@ -12,6 +12,8 @@
         }
     }
     export let total: number = 0;
+    export let page: number = 0;
+    export let totalPages: number = 0;
     export let disablePrevious: boolean = false;
     export let disableNext: boolean = false;
 </script>
@@ -32,7 +34,10 @@
         <i class="fa fa-arrow-right" />
     </button>
     <ul class="pagination-list">
-        <li class="pull-right">Total: {total}</li>
+        <li class="pull-right">
+            <span>Página(s) {page} de {totalPages}</span>
+            <span>Total de Registros: {total}</span>
+        </li>
     </ul>
 </nav>
 
@@ -45,5 +50,9 @@
     button.is-link:hover {
         color: #000;
         border-color: #000;
+    }
+    ul.pagination-list li {
+        display: flex;
+        flex-direction: column;
     }
 </style>

@@ -5,7 +5,6 @@
     import type IPageable from "$interfaces/IPageable";
     import type IPageableContent from "$interfaces/IPageableContent";
     import type ISortRequest from "$interfaces/ISortRequest";
-    import type IFalha from "$interfaces/models/IFalha";
     import CssType from "$lib/enums/CssType";
     import SortDirection from "$lib/enums/SortDirection";
 
@@ -17,24 +16,36 @@
         content: [],
         number: 0,
         size: 0,
-        totalElemenets: 0,
+        totalElements: 0,
         totalPages: 0,
-        pageable:{
-            pageNumber:0,
+        pageable: {
+            pageNumber: 0,
             pageSize: 0,
-            sort:{
-                sortColumn:"",
-                sortDirection: SortDirection.ASC
-            } as ISortRequest
-        } as IPageable
+            sort: {
+                sortColumn: "",
+                sortDirection: SortDirection.ASC,
+            } as ISortRequest,
+        } as IPageable,
     } as IPageableContent<any>;
 
     const pesquisar = () => {
-        console.log('Pesquisando');
+        console.log("Pesquisando");
         doSearch().then((ret) => {
             console.log(filters);
             retorno = ret;
         });
+    };
+    const onNext = () => {
+        if (filters.page < retorno.totalPages - 1) {
+            filters.page += 1;
+        }
+        pesquisar();
+    };
+    const onPrevious = () => {
+        if (filters.page > 0) {
+            filters.page -= 1;
+        }
+        pesquisar();
     };
     pesquisar();
 </script>
@@ -76,7 +87,15 @@
             </tbody>
         </table>
         <div class="div-paginacao">
-            <Pagination total={0} />
+            <Pagination
+                disablePrevious={filters.page == 0}
+                disableNext={retorno.totalPages - 1 == filters.page}
+                total={retorno.totalElements}
+                page={retorno.number + 1}
+                totalPages={retorno.totalPages}
+                on:next={onNext}
+                on:previous={onPrevious}
+            />
         </div>
     </div>
 </div>

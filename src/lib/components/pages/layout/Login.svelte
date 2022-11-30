@@ -10,7 +10,7 @@
             const basic = authService.getBasincAuthentication(user, password);
             const valid = await authService.refreshToken(basic);
             if (valid?.token) {
-                auth.setAuth(user, password);
+                auth.setAuthBasic(basic);
                 token.set(valid?.token);
             }
         }

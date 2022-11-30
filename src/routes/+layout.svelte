@@ -6,10 +6,23 @@
     import "font-awesome/css/font-awesome.min.css";
     import "../app.css";
 
-    import { auth } from "$stores/auth";
+    import { auth, token } from "$stores/auth";
+    import { authService } from "$services/authService";
     import Login from "$components/pages/layout/Login.svelte";
     import Alerts from "$components/pages/layout/Alerts.svelte";
     export const prerender = true;
+
+    async function doLogin() {
+        const basic = auth.getAuth();
+        const valid = await authService.refreshToken(basic);
+        if (valid?.token) {
+            auth.setAuthBasic(basic);
+            token.set(valid?.token);
+        } else {
+            auth.clear();
+        }
+    }
+    doLogin();
 </script>
 
 <svelte:head>
