@@ -6,9 +6,11 @@
     import FormHeader from "$components/pages/layout/FormHeader.svelte";
     import FormPage from "$components/pages/layout/FormPage.svelte";
     import { makeClient } from "$services/crudService";
+    import { makeNavigationService } from "$services/navigationService";
 
     import { alerts } from "$lib/stores/alerts";
 
+    const navigationService = makeNavigationService("falha", goto);
     const client = makeClient<IFalha>("falha");
     let model: IFalha = {
         descricao: "",
@@ -27,10 +29,6 @@
         }
     });
 
-    function onCancel() {
-        goto("/falha");
-    }
-
     async function onSubmit() {
         console.log("Evento de submit");
         try {
@@ -39,14 +37,14 @@
                 type: "success",
                 message: `Registro com id: ${resp.id} cadastrado com successo`,
             });
-            goto(`/falha/form?id=${resp.id}`);
+            navigationService.goEditar(resp.id);
         } catch (err: any) {
             alerts.addItem({ type: "danger", message: err.message });
         }
     }
 </script>
 
-<FormPage on:cancel={onCancel} on:submit={onSubmit}>
+<FormPage on:cancel={navigationService.goIndex} on:submit={onSubmit}>
     <FormHeader slot="header">Cadastro de falhas</FormHeader>
     <div slot="fields" class="field">
         <label class="label" for="descricao">* Nome da falha:</label>

@@ -10,11 +10,13 @@
     import CssType from "$lib/enums/CssType";
     import { makeClient } from "$services/crudService";
     import { makeDataTableService } from "$services/dataTableService";
+    import { makeNavigationService } from "$services/navigationService";
 
     import SortDirection from "$lib/enums/SortDirection";
     import AppTh from "$components/AppTh.svelte";
     import type IDataTable from "$interfaces/components/IDataTable";
 
+    const navigationService = makeNavigationService("falha", goto);
     const client = makeClient<IFalha>("falha");
     const dataTable = {} as IDataTable;
 
@@ -43,10 +45,6 @@
             }
         }
     });
-
-    const editar = (id: any) => {
-        goto(`/falha/form?id=${id}`);
-    };
 </script>
 
 <DataTable
@@ -84,7 +82,7 @@
             <TagButton
                 type={CssType.WARNING}
                 icon="edit"
-                on:click={(e) => editar(row.id)}>&nbsp; Editar</TagButton
+                on:click={(e) => navigationService.goEditar(row.id)}>&nbsp; Editar</TagButton
             >
             <TagButton type={CssType.DANGER} icon="trash" on:click
                 >&nbsp; Excluir</TagButton
