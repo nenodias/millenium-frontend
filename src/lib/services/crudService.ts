@@ -1,10 +1,11 @@
 import type IFilterPageable from "$interfaces/IFilterPageable";
 import type IPageableContent from "$interfaces/IPageableContent";
 import type ISortRequest from "$interfaces/ISortRequest";
+import type ICrudService from "$interfaces/services/ICrudService";
 import { client } from "./axiosService";
 
 
-function makeClient<T>(base: string) {
+function makeClient<T>(base: string): ICrudService<T> {
 
     const findAll = async function (token: string, params: IFilterPageable): Promise<IPageableContent<T>> {
         try {
@@ -18,7 +19,7 @@ function makeClient<T>(base: string) {
                             stringParams += `sortDirection=${sort.sortDirection}`;
                         }
                     } else {
-                        if(value !== ""){
+                        if (value !== "") {
                             stringParams += `${key}=${value}`;
                         }
                     }

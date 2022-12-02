@@ -7,11 +7,14 @@
     import type ISortRequest from "$interfaces/ISortRequest";
     import CssType from "$lib/enums/CssType";
     import SortDirection from "$lib/enums/SortDirection";
+    import type IDataTable from "../interfaces/components/IDataTable";
 
+    export let dataTable: IDataTable = {};
     export let title: string = "";
     export let filters: IFilterPageable;
     export let doSearch = (): Promise<IPageableContent<any>> =>
         Promise.reject();
+    let loading: boolean = false;
 
     let retorno = {
         content: [],
@@ -30,8 +33,11 @@
     } as IPageableContent<any>;
 
     const pesquisar = () => {
+        loading = true;
         doSearch().then((ret) => {
+            loading = false;
             retorno = ret;
+            dataTable.retorno = retorno;
         });
     };
     const onNext = () => {
@@ -48,8 +54,12 @@
     };
     pesquisar();
 
-    export let dataTable = { pesquisar };
     dataTable.pesquisar = pesquisar;
+    dataTable.onNext = onNext;
+    dataTable.onPrevious = onPrevious;
+    dataTable.title = title;
+    dataTable.filters = filters;
+    dataTable.retorno = retorno;
 </script>
 
 <div class="hero ">
@@ -71,23 +81,26 @@
         </form>
 
         <hr />
-        <table
-            id="falha"
-            class="table is-bordered is-striped is-narrow responsive-stacked-table with-mobile-labels"
-        >
-            <thead>
-                <tr>
-                    <slot name="theader" />
-                </tr>
-            </thead>
-            <tbody class="dados-tabela">
-                {#each retorno.content as dado, index}
+        {#if loading}
+            <span class="loader-mixin" />
+        {:else}
+            <table
+                class="table is-bordered is-striped is-narrow responsive-stacked-table with-mobile-labels"
+            >
+                <thead>
                     <tr>
-                        <slot name="tbody" row={dado} />
+                        <slot name="theader" />
                     </tr>
-                {/each}
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="dados-tabela">
+                    {#each retorno.content as dado, index}
+                        <tr>
+                            <slot name="tbody" row={dado} />
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        {/if}
         <div class="div-paginacao">
             <Pagination
                 disablePrevious={filters.page == 0}

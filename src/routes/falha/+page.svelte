@@ -9,13 +9,14 @@
     import TagButton from "$components/TagButton.svelte";
     import CssType from "$lib/enums/CssType";
     import { makeClient } from "$services/crudService";
+    import { makeDataTableService } from "$services/dataTableService";
 
-    import SortDirection, { toggleDirection } from "$lib/enums/SortDirection";
-    import type IPageableContent from "$interfaces/IPageableContent";
+    import SortDirection from "$lib/enums/SortDirection";
     import AppTh from "$components/AppTh.svelte";
+    import type IDataTable from "$interfaces/components/IDataTable";
 
     const client = makeClient<IFalha>("falha");
-    const dataTable = { pesquisar: null };
+    const dataTable = {} as IDataTable;
 
     let params = {
         descricao: "",
@@ -27,10 +28,12 @@
         } as ISortRequest,
     } as IFalhaFilter;
 
-    const search = (): Promise<IPageableContent<IFalha>> => {
-        console.log(`Realizando consulta`, params);
-        return client.findAll(token.getToken(), params);
-    };
+    const dataTableService = makeDataTableService(
+        params,
+        token,
+        client,
+        dataTable
+    );
 
     page.subscribe(async (data) => {
         if (data.url.searchParams.has("descricao")) {
@@ -41,31 +44,17 @@
         }
     });
 
-    const reOrder = (evt: CustomEvent<string>) => {
-        const column = evt.detail;
-        console.log("ReOrder", evt, params);
-        if (params.sort.sortColumn === column) {
-            params.sort = {
-                sortColumn: column,
-                sortDirection: toggleDirection(params.sort.sortDirection),
-            };
-        } else {
-            params.sort = {
-                sortColumn: column,
-                sortDirection: params.sort.sortDirection,
-            };
-        }
-        if (dataTable.pesquisar !== null) {
-            dataTable.pesquisar();
-        }
-    };
-
     const editar = (id: any) => {
         goto(`/falha/form?id=${id}`);
     };
 </script>
 
-<DataTable {dataTable} title="Falhas" filters={params} doSearch={search}>
+<DataTable
+    {dataTable}
+    title="Falhas"
+    filters={params}
+    doSearch={dataTableService.search}
+>
     <svelte:fragment slot="filters">
         <div class="field">
             <label class="label" for="descricao">Nome da falha:</label>
@@ -84,10 +73,8 @@
         </div>
     </svelte:fragment>
     <svelte:fragment slot="theader">
-        <AppTh column="id" on:reOrder={reOrder} sort={params.sort}>Id</AppTh>
-        <AppTh column="descricao" on:reOrder={reOrder} sort={params.sort}
-            >Descrição</AppTh
-        >
+        <AppTh column="id" {dataTableService}>Id</AppTh>
+        <AppTh column="descricao" {dataTableService}>Descrição</AppTh>
         <th class="options">Ações</th>
     </svelte:fragment>
     <svelte:fragment slot="tbody" let:row>
