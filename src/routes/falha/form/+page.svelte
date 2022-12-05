@@ -37,7 +37,7 @@
                 type: "success",
                 message: `Registro com id: ${resp.id} cadastrado com successo`,
             });
-            navigationService.goEditar(resp.id);
+            navigationService.goIndex();
         } catch (err: any) {
             alerts.addItem({ type: "danger", message: err.message });
         }

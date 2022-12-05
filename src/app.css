@@ -54,12 +54,27 @@ body > .container.is-fluid.box{
  ResponsiveTable
 */
 
+.responsive-stacked-table th span.label,
+.responsive-stacked-table td span.label{
+    display: none;
+}
+
+
 @media
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px)  {
 
     .responsive-stacked-table thead {
     	display: none;
+    }
+    .responsive-stacked-table tr {
+        margin-bottom: 5px;
+        border: 1px solid;
+    }
+    .responsive-stacked-table th span.label,
+    .responsive-stacked-table td span.label{
+    	display: inline;
+        margin-right: 5px;
     }
     .responsive-stacked-table tr,
     .responsive-stacked-table th,

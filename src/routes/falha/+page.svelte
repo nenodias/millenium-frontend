@@ -76,15 +76,15 @@
         <th class="options">Ações</th>
     </svelte:fragment>
     <svelte:fragment slot="tbody" let:row>
-        <td>{row.id}</td>
-        <td>{row.descricao}</td>
+        <td><span class="label">Id:</span>{row.id}</td>
+        <td><span class="label">Descrição:</span>{row.descricao}</td>
         <td class="options">
             <TagButton
                 type={CssType.WARNING}
                 icon="edit"
                 on:click={(e) => navigationService.goEditar(row.id)}>&nbsp; Editar</TagButton
             >
-            <TagButton type={CssType.DANGER} icon="trash" on:click
+            <TagButton type={CssType.DANGER} icon="trash"
                 >&nbsp; Excluir</TagButton
             >
         </td>
