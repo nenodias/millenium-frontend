@@ -75,10 +75,28 @@ function makeClient<T>(base: string): ICrudService<T> {
         }
     };
 
+    const deleteById = async function (id: number, token: string): Promise<boolean> {
+        try {
+            const resp = await client.delete(`/${base}/${id}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            if (resp.status >= 200 && resp.status <= 299) {
+                return Promise.resolve(true);
+            }
+            return Promise.reject(resp);
+        } catch (err: any) {
+            console.error(err);
+            return Promise.reject(err);
+        }
+    };
+
     return {
         findAll,
         findById,
-        create
+        create,
+        deleteById
     };
 }
 

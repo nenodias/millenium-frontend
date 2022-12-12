@@ -5,6 +5,7 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import { token } from "$stores/auth";
+    import { alerts } from "$stores/alerts";
     import DataTable from "$components/DataTable.svelte";
     import TagButton from "$components/TagButton.svelte";
     import CssType from "$lib/enums/CssType";
@@ -15,9 +16,14 @@
     import SortDirection from "$lib/enums/SortDirection";
     import AppTh from "$components/AppTh.svelte";
     import type IDataTable from "$interfaces/components/IDataTable";
+    import AppModal from "$components/AppModal.svelte";
+    import type IModal from "$interfaces/components/IModal";
 
     const navigationService = makeNavigationService("falha", goto);
     const client = makeClient<IFalha>("falha");
+    const modalInstance = {
+        active: false,
+    } as IModal;
     const dataTable = {} as IDataTable;
 
     let params = {
@@ -45,8 +51,30 @@
             }
         }
     });
+
+    function onDelete(id: number) {
+        modalInstance.value = id;
+        if (modalInstance.show) {
+            modalInstance.show();
+        }
+        modalInstance.onSuccess = async () => {
+            try {
+                let resp = await client.deleteById(id, token.getToken());
+                alerts.addItem({
+                    type: "success",
+                    message: `Registro com id: ${id} removido com successo`,
+                });
+                if (dataTable.pesquisar) {
+                    dataTable.pesquisar();
+                }
+            } catch (err: any) {
+                alerts.addItem({ type: "danger", message: err.message });
+            }
+        };
+    }
 </script>
 
+<AppModal title="Deseja excluir o registro?" instance={modalInstance} />
 <DataTable
     {dataTable}
     title="Falhas"
@@ -82,10 +110,13 @@
             <TagButton
                 type={CssType.WARNING}
                 icon="edit"
-                on:click={(e) => navigationService.goEditar(row.id)}>&nbsp; Editar</TagButton
+                on:click={(e) => navigationService.goEditar(row.id)}
+                >&nbsp; Editar</TagButton
             >
-            <TagButton type={CssType.DANGER} icon="trash"
-                >&nbsp; Excluir</TagButton
+            <TagButton
+                type={CssType.DANGER}
+                icon="trash"
+                on:click={(e) => onDelete(row.id)}>&nbsp; Excluir</TagButton
             >
         </td>
     </svelte:fragment>
