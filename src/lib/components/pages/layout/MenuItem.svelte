@@ -8,7 +8,7 @@
     }
 </script>
 
-<span on:click={onClick}>
+<span on:click={onClick} on:keyup={onClick} tabIndex="0">
     <i class="{icon ? "fa "+icon:""}" />
     &nbsp;
     {title}

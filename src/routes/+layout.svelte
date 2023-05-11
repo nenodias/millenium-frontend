@@ -10,7 +10,6 @@
     import { authService } from "$services/authService";
     import Login from "$components/pages/layout/Login.svelte";
     import Alerts from "$components/pages/layout/Alerts.svelte";
-    export const prerender = true;
 
     async function doLogin() {
         const basic = auth.getAuth();
